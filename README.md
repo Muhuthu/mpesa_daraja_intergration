@@ -77,7 +77,7 @@ MPESA_DARAJA_INTERGRATION
 
 ---
 
-## 🔎 Overview
+## Overview
 
 This module lets **one SaaS platform** serve **many businesses (tenants)** simultaneously, where every tenant plugs in its own M-Pesa credentials without ever touching another tenant's data or money flow.
 
