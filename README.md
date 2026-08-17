@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💳 Multi-Tenant M-Pesa Integration
+# Multi-Tenant M-Pesa Integration
 
 ### Production-grade Daraja (M-Pesa) engine for multi-tenant SaaS POS / ERP platforms
 
@@ -28,7 +28,7 @@
 
 <br/>
 
-## 📁 Repository Map
+## Repository Map
 
 ```text
 MPESA_DARAJA_INTERGRATION
@@ -63,7 +63,7 @@ MPESA_DARAJA_INTERGRATION
 
 <br/>
 
-## 🧭 Table of Contents
+## Table of Contents
 
 | | | |
 |---|---|---|
@@ -85,10 +85,10 @@ Each business supplies:
 
 | Credential | Purpose |
 |---|---|
-| 🔑 Consumer Key / Secret | Daraja OAuth authentication |
-| 🔒 Passkey | STK Push password generation |
-| 🏪 Shortcode / Till Number | Where the money lands |
-| 🌐 Callback URLs | Where Safaricom sends results |
+| Consumer Key / Secret | Daraja OAuth authentication |
+| Passkey | STK Push password generation |
+| Shortcode / Till Number | Where the money lands |
+| Callback URLs | Where Safaricom sends results |
 
 Every request in the system is scoped by three identifiers that travel together through the entire call stack:
 
@@ -104,7 +104,7 @@ This trio is the backbone of tenant isolation — see [Multi-Tenant Business Flo
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 > The platform sits between the POS frontend and Safaricom's Daraja API, orchestrating auth, payments, persistence and real-time delivery back to the till. Requests flow **POS → Controller → Service → Daraja**, while callbacks flow the other way: **Daraja → Callback Route → Database → Socket.IO → POS**, so a cashier sees a payment land without ever refreshing the screen.
 
@@ -114,37 +114,37 @@ This trio is the backbone of tenant isolation — see [Multi-Tenant Business Flo
 
 <img src="docs/images/01-system-architecture.png" alt="System Architecture" width="100%"/>
 
-<sub>🧩 High-level component diagram</sub>
+<sub> High-level component diagram</sub>
 
 </td>
 <td width="55%" valign="top">
 
 ```text
-┌─────────────┐      ┌──────────────┐
+┌─────────────┐       ┌──────────────┐
 │ POS Frontend│─────▶│  Controller   │
-│ (React/     │      │ mpesaController│
-│  Socket.IO) │      └──────┬───────┘
-└─────▲───────┘             │
-      │                     ▼
+│ (React/     │       │ mpesaController│
+│  Socket.IO) │       └──────┬───────┘
+└─────▲───────┘              │
+      │                      ▼
       │              ┌──────────────┐
-      │              │   Service     │
-      │              │ mpesaService  │
+      │              │   Service    │
+      │              │ mpesaService │
       │              └──────┬───────┘
       │                     ▼
       │              ┌──────────────┐
-      │              │ Safaricom     │
-      │              │ Daraja API    │
+      │              │ Safaricom    │
+      │              │ Daraja API   │
       │              └──────┬───────┘
       │                     │ callback
       │              ┌──────▼───────┐
-      │              │  Database     │
-      │              │ (3 tables)    │
+      │              │  Database    │
+      │              │ (3 tables)   │
       │              └──────┬───────┘
       │                     ▼
       │              ┌──────────────┐
-      └──────────────│ Socket.IO     │
-                      │ SocketService │
-                      └──────────────┘
+      └──────────────│ Socket.IO    │
+                     │ SocketService│
+                     └──────────────┘
 ```
 
 </td>
@@ -155,7 +155,7 @@ This trio is the backbone of tenant isolation — see [Multi-Tenant Business Flo
 
 ---
 
-## 🏢 Multi-Tenant Business Flow
+## Multi-Tenant Business Flow
 
 > Every single controller method begins the same way — it resolves **who** is calling. The `businessId` extracted from the authenticated user is the tenant key that scopes credentials, callback URLs, and transaction logs for the rest of the request lifecycle.
 
@@ -165,7 +165,7 @@ This trio is the backbone of tenant isolation — see [Multi-Tenant Business Flo
 
 <img src="docs/images/08-multi-tenant-business-flow.png" alt="Multi Tenant Business Flow" width="100%"/>
 
-<sub>🏬 One platform → many isolated businesses</sub>
+<sub>One platform → many isolated businesses</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -198,10 +198,10 @@ const config =
 ```
 
 **Tenant isolation guarantees:**
-- ✅ Separate credentials per business
-- ✅ Separate callback URLs per business/store
-- ✅ Separate transaction logs per business
-- ✅ Separate Socket.IO rooms (`business:{id}`)
+- Separate credentials per business
+- Separate callback URLs per business/store
+- Separate transaction logs per business
+- Separate Socket.IO rooms (`business:{id}`)
 
 </td>
 </tr>
@@ -211,7 +211,7 @@ const config =
 
 ---
 
-## 🗄️ Database Design
+## Database Design
 
 > Three tables carry the entire integration: one stores encrypted tenant credentials, one stores per-tenant callback routing, and one is the immutable audit trail of every payment attempt and result — see the full [schema](#-database-schema) further down.
 
@@ -221,7 +221,7 @@ const config =
 
 <img src="docs/images/07-database-design.png" alt="Database Design" width="100%"/>
 
-<sub>🧬 Entity relationship overview</sub>
+<sub> Entity relationship overview</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -259,7 +259,7 @@ config_id     // which credential set was used
 
 ---
 
-## ⚙️ M-Pesa Configuration Management
+## M-Pesa Configuration Management
 
 > `MpesaConfigModel` is the credential vault. It never stores a secret in plain text — `consumer_secret`, `passkey`, and `security_credential` are AES‑256‑GCM encrypted on write and only decrypted in-memory, milliseconds before an outbound Daraja call is made.
 
@@ -269,7 +269,7 @@ config_id     // which credential set was used
 
 <img src="docs/images/07-database-design.png" alt="Config Management" width="100%"/>
 
-<sub>🔐 Credentials in, ciphertext at rest</sub>
+<sub> Credentials in, ciphertext at rest</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -326,7 +326,7 @@ static async getConfigForApiCall(businessId, storeId, configId) {
 
 ---
 
-## 📲 STK Push Flow
+## STK Push Flow
 
 > The customer-facing "Enter M‑Pesa PIN" prompt. The controller validates and normalizes the phone number, loads the tenant's config, and delegates to `mpesaService.stkPush`, which builds the Daraja password, fires the request, and logs a `PENDING` transaction row that the callback will later close out.
 
@@ -413,7 +413,7 @@ await MpesaController._logMpesaRequest({
 
 ---
 
-## ↩️ STK Callback Processing
+## STK Callback Processing
 
 > Safaricom calls back asynchronously — often seconds after the initial request — with the customer's decision. Daraja requires an **immediate** `200 OK`, so the controller responds first, then processes the payload, maps Safaricom's numeric `ResultCode` to a human status, updates the log row, and fans the result out over sockets.
 
@@ -423,7 +423,7 @@ await MpesaController._logMpesaRequest({
 
 <img src="docs/images/03-stk-callback-flow.png" alt="STK Callback Flow" width="100%"/>
 
-<sub>📥 Safaricom tells us what happened</sub>
+<sub> Safaricom tells us what happened</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -485,7 +485,7 @@ static async stkCallback(req, res) {
 
 ---
 
-## 🧾 C2B Registration
+## C2B Registration
 
 > Before Safaricom will forward Pay‑Bill/Buy‑Goods deposits to your app, it needs to be told **where** to send them. This one-time (per tenant) call registers the tenant's Validation and Confirmation URLs against their shortcode.
 
@@ -495,7 +495,7 @@ static async stkCallback(req, res) {
 
 <img src="docs/images/04-c2b-registration-flow.png" alt="C2B Registration Flow" width="100%"/>
 
-<sub>🌐 Telling Safaricom where to call back</sub>
+<sub> Telling Safaricom where to call back</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -554,7 +554,7 @@ async c2bRegisterURL(businessId, storeId, configId) {
 
 ---
 
-## ✅ C2B Confirmation Processing
+## C2B Confirmation Processing
 
 > Whenever a customer deposits directly via Pay‑Bill/Till (outside the app's STK flow), Safaricom posts the completed transaction here. The controller persists it as a `C2B` row and broadcasts it live — this is how "walk-in" M-Pesa payments still show up on the POS in real time.
 
@@ -564,7 +564,7 @@ async c2bRegisterURL(businessId, storeId, configId) {
 
 <img src="docs/images/05-c2b-confirmation-flow.png" alt="C2B Confirmation Flow" width="100%"/>
 
-<sub>💰 A deposit lands — now what?</sub>
+<sub> A deposit lands — now what?</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -614,7 +614,7 @@ static async c2bConfirmation(req, res) {
 
 ---
 
-## 📚 Transaction Logging
+## Transaction Logging
 
 > `mpesa_transaction_logs` is the single source of truth for every payment attempt — STK requests, STK results, C2B deposits, failures and timeouts all funnel through the same audit trail, de-duplicated by receipt number, `trans_id`, or checkout request ID so retried callbacks never create phantom rows.
 
@@ -624,7 +624,7 @@ static async c2bConfirmation(req, res) {
 
 <img src="docs/images/07-database-design.png" alt="Transaction Logging" width="100%"/>
 
-<sub>🧾 One row per payment, start to finish</sub>
+<sub> One row per payment, start to finish</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -677,7 +677,7 @@ static async _logMpesaRequest(data) {
 
 ---
 
-## 🔴 Real-Time POS Notifications
+## Real-Time POS Notifications
 
 > Socket.IO closes the loop: the moment a callback or C2B confirmation is processed, `SocketService` broadcasts into per-business, per-store and per-checkout rooms so **every** connected till updates instantly — no polling, no manual refresh.
 
@@ -687,7 +687,7 @@ static async _logMpesaRequest(data) {
 
 <img src="docs/images/06-realtime-pos-notification-flow.png" alt="Real-time POS Notification Flow" width="100%"/>
 
-<sub>⚡ Payment confirmed → screen updates instantly</sub>
+<sub> Payment confirmed → screen updates instantly</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -743,7 +743,7 @@ Customer pays  →  Daraja callback  →  DB updated
 
 ---
 
-## 🔐 Security Architecture
+## Security Architecture
 
 > Nothing that could compromise a tenant's M-Pesa account is ever persisted or transmitted in plain text. Secrets are encrypted at rest with AES‑256‑GCM (unique IV + auth tag per value), masked in every API response, and only decrypted in-memory for the split second an outbound Daraja call needs them.
 
@@ -753,7 +753,7 @@ Customer pays  →  Daraja callback  →  DB updated
 
 <img src="docs/images/07-database-design.png" alt="Security Architecture" width="100%"/>
 
-<sub>🛡️ Encrypt at rest, mask on response</sub>
+<sub> Encrypt at rest, mask on response</sub>
 
 </td>
 <td width="55%" valign="top">
@@ -797,10 +797,10 @@ static getConfigForResponse(config) {
 
 ---
 
-## 🧩 Related Models
+## Related Models
 
 <details open>
-<summary><b>📦 OrderModel — linking payments to real orders</b></summary>
+<summary><b> OrderModel — linking payments to real orders</b></summary>
 
 <br/>
 
@@ -849,7 +849,7 @@ class MpesaConfigModel {
 </details>
 
 <details>
-<summary><b>📡 MpesaCallbackModel — per-tenant callback routing</b></summary>
+<summary><b> MpesaCallbackModel — per-tenant callback routing</b></summary>
 
 <br/>
 
@@ -875,7 +875,7 @@ class MpesaCallbackModel {
 </details>
 
 <details>
-<summary><b>🔌 SocketService & socketServer — tenant-scoped real-time rooms</b></summary>
+<summary><b> SocketService & socketServer — tenant-scoped real-time rooms</b></summary>
 
 <br/>
 
@@ -899,50 +899,50 @@ socket.on('join-business', (businessId) => {
 
 ---
 
-## 🗃️ Database Schema
+## Database Schema
 
-### 1️⃣ `business_mpesa_configs`
+###  `business_mpesa_configs`
 
 | Column | Type | Notes |
 |---|---|---|
 | `id` | varchar(pk) | |
-| `business_id` | varchar | 🏢 tenant key |
+| `business_id` | varchar | tenant key |
 | `store_id` | varchar, nullable | branch override |
-| `consumer_key` / `consumer_secret` | text | 🔒 encrypted |
-| `passkey` | text | 🔒 encrypted |
-| `security_credential` | text | 🔒 encrypted |
+| `consumer_key` / `consumer_secret` | text | encrypted |
+| `passkey` | text |  encrypted |
+| `security_credential` | text | encrypted |
 | `shortcode` / `till_number` | varchar | |
 | `transaction_type` | varchar | default `CustomerBuyGoodsOnline` |
 | `initiator_name` | varchar | for B2C/Reversal/etc. |
-| `webhook_secret` | varchar | 🔒 encrypted |
+| `webhook_secret` | varchar | encrypted |
 | `environment` | enum | `sandbox` / `production` |
 | `is_active` / `is_default` | boolean | |
 | `sync_status`, `sync_version`, `last_synced` | — | offline-first sync support |
 
-### 2️⃣ `business_mpesa_callbacks`
+###  `business_mpesa_callbacks`
 
 | Column | Type | Notes |
 |---|---|---|
 | `id` | varchar(pk) | |
-| `business_id` / `store_id` | varchar | 🏢 tenant + branch scope |
+| `business_id` / `store_id` | varchar | tenant + branch scope |
 | `mpesa_config_id` | varchar, FK | |
 | `callback_type` | enum | `stk_push`, `c2b_validation`, `c2b_confirmation`, `b2c_result`, ... |
 | `callback_url` | varchar | |
 | `is_active` / `is_default` | boolean | |
 
-### 3️⃣ `mpesa_transaction_logs`
+###  `mpesa_transaction_logs`
 
 | Column | Type | Notes |
 |---|---|---|
 | `id` | varchar(pk) | |
-| `business_id` / `store_id` / `config_id` | varchar | 🏢 tenant scope |
+| `business_id` / `store_id` / `config_id` | varchar | tenant scope |
 | `transaction_type` | enum | `STK_PUSH`, `C2B` |
 | `phone`, `first_name`, `amount` | — | |
 | `merchant_request_id`, `checkout_request_id` | varchar | STK correlation |
 | `trans_id`, `trans_time`, `trans_amount`, `bill_ref_number` | — | C2B fields |
 | `response_code`, `response_description` | — | Daraja request-time result |
 | `result_code`, `result_description` | — | Daraja callback result |
-| `mpesa_receipt_number` | varchar | 🧾 dedup key |
+| `mpesa_receipt_number` | varchar | dedup key |
 | `callback_metadata` / `callback_response` | json | raw payloads, for audits |
 | `status` | enum | `PENDING`, `COMPLETED`, `FAILED`, `CANCELLED`, `TIMEOUT` |
 | `order_id`, `invoice_id` | varchar, nullable | links to `OrderModel` |
@@ -953,7 +953,7 @@ socket.on('join-business', (businessId) => {
 
 <div align="center">
 
-### Built for ERP · POS · Restaurant & Enterprise SaaS platforms 🇰🇪
+### Built for ERP · POS · Restaurant & Enterprise SaaS platforms
 
 <img src="https://img.shields.io/badge/Made%20with-%E2%98%95%20%26%20Node.js-blueviolet?style=for-the-badge" />
 
